@@ -1,0 +1,27 @@
+#if $loggedin
+<p>Angemeldet als &quot;<b>$user</b>&quot;</p>
+<p><a href="logout">Abmelden</a></p>
+<p><a href="listing">zur &Uuml;bersicht</a></p>
+#else
+<p>Anmelden:</p>
+#if $reason
+<p><font color="red">Fehler beim Anmelden: $reason</font></p>
+#end if
+<p>
+	<form action="login" method="POST">
+		<table>
+			<tr>
+				<td>Benutzername:</td>
+				<td><input type="text" name="user" value="" size="12"/></td>
+			</tr>
+			<tr>
+				<td>Passwort:</td>
+				<td><input type="password" name="password" hidden="true" value="" size="12"/></td>
+			</tr>
+			<tr>
+				<td><input type="submit" name="submit" value="login"/></td>
+			</tr>
+		</table>
+	</form>
+</p>
+#end if

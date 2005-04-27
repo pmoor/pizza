@@ -1,0 +1,37 @@
+#if $reservation
+#if $message
+<p><font color="red">$message</font></p>
+#end if
+#if $goodmessage
+<p><font color="green">$goodmessage</font></p>
+#end if
+<form action="edit" method="POST">
+<input type="hidden" name="oid" value="$reservation.getOid()"/>
+<table>
+	<tr>
+		<td>Tag:</td>
+		<td>$reservation.getDay()</td>
+	</tr>
+	<tr>
+		<td>Start:</td>
+		<td><input type="text" name="start" maxlength="5" size="6" value="$reservation.getStart()"/></td>
+	</tr>
+	<tr>
+		<td>Ende:</td>
+		<td><input type="text" name="end" maxlength="5" size="6" value="$reservation.getEnd()"/></td>
+	</tr>
+	<tr>
+		<td>Beschreibung*:</td>
+		<td><textarea rows="5" cols="40" name="description">$reservation.getDescription().encode('latin-1')</textarea></td>
+	</tr>
+	<tr>
+		<td colspan="2">*: Kann von niemand anderem gelesen werden.</td>
+	</tr>
+</table>
+<input type="submit" name="submit" value="ok"/>
+<input type="reset" name="reset" value="zur&uuml;cksetzen"/>
+</form>
+<p><a href="listing">Zur&uuml;ck</a></p>
+#else
+<p>Ung&uuml;ltige Reservationsnummer!</p>
+#end if

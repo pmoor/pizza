@@ -1,0 +1,11 @@
+#if $r
+#if $deleted
+<p><font color="green">Die Reservation vom $r.getDay() wurde gel&ouml;scht.</font></p>
+<p><a href="listing">Zur&uuml;ck</a></p>
+#else
+<p><font color="red">Soll die Reservation vom $r.getDay() wirklich gel&ouml;scht werden?</font><br/>
+<a href="delete?oid=$r.getOid()&confirm=$r.getOid()">l&ouml;schen</a> <a href="listing">abbrechen</a></p>
+#end if
+#else
+<p>Ung&uuml;ltige Reservationsnummer!</p>
+#end if

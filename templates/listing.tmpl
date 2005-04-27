@@ -1,0 +1,38 @@
+<p>Eine <a href="new"><b>neue</b> Reservation</a> erstellen.</p>
+<p>Aktuelle Reservationen:</p>
+#if $reservations
+<table cellpadding="5" cellspacing="0">
+	<tr>
+		<th align="left">Tag</th>
+		<th align="left">Von</th>
+		<th align="left">Bis</th>
+		<th align="left">Wer</th>
+		<th></th>
+	</tr>
+#for $r in $reservations
+#if $r.getReservatorOid() == $oid
+	<tr style="background-color: rgb(147,147,255);">
+#else
+	<tr>
+#end if
+		<td>$r.getDay()</td>
+		<td>$r.getStart()</td>
+		<td>$r.getEnd()</td>
+		<td>$r.getWho()</td>
+		#if $r.getReservatorOid() == $oid
+		<td><a href="edit?oid=$r.getOid()">&auml;ndern</a> <a href="delete?oid=$r.getOid()">l&ouml;schen</a></td>
+		#else
+		<td></td>
+		#end if
+	</tr>
+	#if $r.getReservatorOid() == $oid and $r.getDescription()
+	<tr style="background-color: rgb(147,147,255);">
+		<td></td>
+		<td colspan="4">$r.getDescription().encode('latin-1')</td>
+	</tr>
+	#end if
+#end for
+</table>
+#else
+<p>Keine Reservationen gefunden.</p>
+#end if

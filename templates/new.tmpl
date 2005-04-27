@@ -1,0 +1,38 @@
+#if $message
+<p><font color="red">$message</font></p>
+#end if
+#if $goodmessage
+<p><font color="green">$goodmessage</font></p>
+<p><a href="listing">Zur&uuml;ck</a></p>
+#end if
+#if $showform
+<form action="new" method="POST">
+<table>
+	<tr>
+		<td>Tag/Monat/Jahr:</td>
+		<td>
+			<input type="text" name="day" maxlength="2" size="3" value="$data.day"/>
+			<input type="text" name="month" maxlength="2" size="3" value="$data.month"/>
+			<input type="text" name="year" maxlength="4" size="5" value="$data.year"/>
+		</td>
+	</tr>
+	<tr>
+		<td>Start:</td>
+		<td><input type="text" name="start" maxlength="5" size="6" value="$data.start"/></td>
+	</tr>
+	<tr>
+		<td>Ende:</td>
+		<td><input type="text" name="end" maxlength="5" size="6" value="$data.end"/></td>
+	</tr>
+	<tr>
+		<td>Beschreibung*:</td>
+		<td><textarea rows="5" cols="40" name="description">$data.description.encode('latin-1')</textarea></td>
+	</tr>
+	<tr>
+		<td colspan="2">*: Kann von niemand anderem gelesen werden.</td>
+	</tr>
+</table>
+<input type="submit" name="submit" value="ok"/>
+<input type="reset" name="reset" value="zur&uuml;cksetzen"/>
+</form>
+#end if
