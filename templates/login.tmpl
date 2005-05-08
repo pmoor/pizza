@@ -8,7 +8,7 @@
 <p><font color="red">Fehler beim Anmelden: $reason</font></p>
 #end if
 <p>
-	<form action="login" method="POST">
+	<form action="login" method="post">
 		<table>
 			<tr>
 				<td>Benutzername:</td>
@@ -16,7 +16,7 @@
 			</tr>
 			<tr>
 				<td>Passwort:</td>
-				<td><input type="password" name="password" hidden="true" value="" size="12"/></td>
+				<td><input type="password" name="password" value="" size="12"/></td>
 			</tr>
 			<tr>
 				<td><input type="submit" name="submit" value="login"/></td>
