@@ -10,12 +10,11 @@ class User:
 	
         _db = None
 
-	def __init__(self, dict, db):
-		self._oid = dict['uid']
-		self._username = dict['username']
-		self._password = dict['password']
-		self._realname = dict['realName']
-		
+	def __init__(self, oid, username, password, real, db):
+		self._oid = int(oid)
+		self._username = username
+		self._password = password
+		self._realname = real
                 self._db = db
 		
         def checkPassword(self, password):
@@ -44,12 +43,12 @@ class Reservation:
 	
         _db = None
 
-	def __init__(self, dict, db):
-		self._oid = int(dict['uid'])
-		self._reservator = int(dict['user_uid'])
-		self._from = datetime.fromtimestamp(dict['starting'])
-		self._to = datetime.fromtimestamp(dict['ending'])
-                self._description = unicode(dict['description'], 'utf8')
+	def __init__(self, oid, user_oid, frm, to, description, db):
+		self._oid = int(oid)
+		self._reservator = int(user_oid)
+		self._from = datetime.fromtimestamp(frm)
+		self._to = datetime.fromtimestamp(to)
+                self._description = unicode(description, 'utf8')
                 self._db = db
        
 	def update(self):
