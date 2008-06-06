@@ -3,7 +3,7 @@ from Cheetah.Template import Template
 
 class LoginModule:
 
-	_dir = '/home/httpd/htdocs/pizza'
+	_dir = '/home/moorwww/public_html/pizza'
 	_sess = None    
 	_reason = ''
 

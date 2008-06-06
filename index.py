@@ -1,4 +1,8 @@
 from mod_python import apache
+import locale
+
+locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
+
 MainPage = apache.import_module('MainPage')
 ListingModule = apache.import_module('ListingModule')
 EditModule = apache.import_module('EditModule')

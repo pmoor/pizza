@@ -7,12 +7,11 @@ import locale
 
 class MainPage:
 	_title = ''
-	_dir = '/home/httpd/htdocs/pizza'
+	_dir = '/home/moorwww/public_html/pizza'
 	_login = None
 	_main = None
 
 	def __init__(self, req, main=None):
-		locale.setlocale(locale.LC_ALL, 'de_DE')
 		self._db = PizzaDB.PizzaDB()
 		self._login = LoginModule.LoginModule(req, self)
 		self._main = main

@@ -3,7 +3,7 @@ from Cheetah.Template import Template
 
 class WelcomeModule:
 
-    _dir = '/home/httpd/htdocs/pizza'
+    _dir = '/home/moorwww/public_html/pizza'
 
     def __init__(self, page):
         page.setTitle('Willkommen')

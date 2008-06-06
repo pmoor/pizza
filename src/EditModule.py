@@ -19,7 +19,7 @@ def extractTuple(strng):
 
 class EditModule:
 
-	_dir = '/home/httpd/htdocs/pizza'
+	_dir = '/home/moorwww/public_html/pizza'
 
 	def __init__(self, req, page, oid, dic):
 		self._page = page
@@ -76,7 +76,7 @@ class EditModule:
 
 class DeleteModule:
 
-	_dir = '/home/httpd/htdocs/pizza'
+	_dir = '/home/moorwww/public_html/pizza'
 
 	def __init__(self, req, page, oid, confirm):
 		self._page = page
@@ -103,7 +103,7 @@ class DeleteModule:
 
 class NewModule:
 
-	_dir = '/home/httpd/htdocs/pizza'
+	_dir = '/home/moorwww/public_html/pizza'
 
 	def __init__(self, req, page, dic):
 		self._page = page

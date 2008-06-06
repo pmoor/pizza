@@ -8,22 +8,19 @@ def format_datetime(dtime):
 
 class PizzaDB:
 
-	_user = 'moor-pizza'
-	_database = 'moor-pizza'
-	_password = 'srN5C1ij'
-	_host = 'localhost'
-
-	_db = None
-
 	def __init__(self):
-		try:
-			self._db = MySQLdb.connect(db = self._database,
-						   host = self._host,
-						   user = self._user,
-						   passwd = self._password)
-			self._db.query('SET CHARACTER SET utf8')
-		except:
-			self._db = None
+		self._user = 'moor-pizza'
+		self._database = 'moor-pizza'
+		self._password = 'srN5C1ij'
+		self._host = 'localhost'
+		self._socket = '/var/lib/mysql/mysql.sock'
+
+		self._db = MySQLdb.connect(db = self._database,
+					   host = self._host,
+					   user = self._user,
+					   passwd = self._password,
+                                           unix_socket = self._socket)
+		self._db.query('SET CHARACTER SET utf8')
 
 	def clean(self):
 		if self._db != None:

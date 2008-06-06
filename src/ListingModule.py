@@ -5,7 +5,7 @@ from Cheetah.Template import Template
 
 class ListingModule:
 
-    _dir = '/home/httpd/htdocs/pizza'
+    _dir = '/home/moorwww/public_html/pizza'
 
     def __init__(self,req,page):
         self._page = page
