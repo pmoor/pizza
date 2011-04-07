@@ -152,7 +152,7 @@ class NewModule:
 				t.message.append('Ung&uuml;ltiger Monat')
 				ok = False
 			
-			if not ( 2005 <= self._dic['year'] <= 2010 ):
+			if not ( 2005 <= self._dic['year'] <= 2100 ):
 				t.message.append('Ung&uuml;ltiges Jahr')
 				ok = False
 
