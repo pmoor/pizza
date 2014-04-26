@@ -1,89 +1,69 @@
-from mod_python import apache
-Types = apache.import_module('Types')
-MySQLdb = apache.import_module('MySQLdb')
-from re import escape
+from google.appengine.ext import db
 
-def format_datetime(dtime):
-	return '%d-%d-%d %d:%d:%d' % (dtime.year, dtime.month, dtime.day, dtime.hour, dtime.minute, dtime.second)
+from src import Types
+
+class User(db.Model):
+  real_name = db.StringProperty()
+  user_name = db.StringProperty()
+  password = db.StringProperty()
+
+class Reservation(db.Model):
+  starting = db.DateTimeProperty()
+  ending = db.DateTimeProperty()
+  description = db.TextProperty()
 
 class PizzaDB:
+  def __init__(self):
+    self._user_cache = {}
 
-	def __init__(self):
-		self._user = 'moor-pizza'
-		self._database = 'moor-pizza'
-		self._password = 'srN5C1ij'
-		self._host = 'localhost'
-		self._socket = '/var/lib/mysql/mysql.sock'
+  def loadUserID(self, id):
+    if id in self._user_cache:
+      return self._user_cache[id]
 
-		self._db = MySQLdb.connect(db = self._database,
-					   host = self._host,
-					   user = self._user,
-					   passwd = self._password,
-                                           unix_socket = self._socket)
-		self._db.query('SET CHARACTER SET utf8')
+    user = db.get(db.Key.from_path("User", id))
+    if user:
+      user = Types.User(user.key().id(), user.user_name, user.password, user.real_name, self)
+      self._user_cache[id] = user
+      return user
 
-	def clean(self):
-		if self._db != None:
-			self._db.close()
-			self._db = None
-
-	def loadUserID(self, id):
-	        query = 'SELECT oid, user, password, realName FROM users WHERE oid = %d' % id
-		cursor = self._db.cursor()
-		cursor.execute(query)
-		row = cursor.fetchone()
-		return Types.User(row[0], row[1], row[2], row[3], self)
-
-	def loadUserName(self, username):
-	        query = 'SELECT oid, user, password, realName FROM users WHERE user = \'%s\'' % escape(username)
-		cursor = self._db.cursor()
-		cursor.execute(query)
-		if cursor.rowcount != 1:
-			return None
-		row = cursor.fetchone()
-		return Types.User(row[0], row[1], row[2], row[3], self)
+  def loadUserName(self, username):
+    q = User.all()
+    q.filter("user_name =", username)
+    users = list(q.run(limit = 2))
+    if len(users) != 1:
+      return None
+    user = users[0]
+    return Types.User(user.key().id(), user.user_name, user.password, user.real_name, self)
         
-        def getReservations(self, start, end):
-	    wherepart = 'WHERE `ending` > \'%s\' AND `starting` < \'%s\'' % (start, end);
-	    query = 'SELECT oid,\
-	    UNIX_TIMESTAMP(`starting`) AS start,\
-	    UNIX_TIMESTAMP(`ending`) AS end,\
-	    description,\
-	    user_oid\
-	    FROM reservations %s ORDER BY `starting`' % wherepart;
-	    cursor = self._db.cursor()
-	    cursor.execute(query)
-	    result = cursor.fetchall()
-	    ret = []
-	    for row in result:
-		ret.append(Types.Reservation(row[0], row[4], row[1], row[2], row[3], self))
-	    return ret
-	
-	def loadReservationOID(self, oid):
-		query = 'SELECT oid,\
-		UNIX_TIMESTAMP(`starting`) AS start,\
-		UNIX_TIMESTAMP(`ending`) AS end,\
-		description,\
-		user_oid\
-		FROM reservations WHERE oid = %d' % int(oid);
-		cursor = self._db.cursor()
-		cursor.execute(query)
-		if cursor.rowcount != 1:
-			return None
-		row = cursor.fetchone()
-		return Types.Reservation(row[0], row[4], row[1], row[2], row[3], self)
+  def getReservations(self, start):
+    q = Reservation.all()
+    q.filter("starting >", start)
+    l = []
+    for r in q.run(limit = 50):
+      l.append(Types.Reservation(r.key().id(), r.key().parent().id(), r.starting, r.ending, r.description, self))
+    return l
+  
+  def loadReservationOID(self, user_id, reservation_id):
+    k = db.Key.from_path("Reservation", reservation_id, parent=db.Key.from_path("User", user_id))
+    r = db.get(k)
+    if r:
+      return Types.Reservation(r.key().id(), r.key().parent().id(), r.starting, r.ending, r.description, self)
 
-        def newReservation(self, owner, start, end, description):
-	    desc = escape(description.encode('utf8'))
-	    query = 'INSERT INTO reservations (`starting`,`ending`,`description`,`user_oid`) VALUES (\'%s\',\'%s\',\'%s\',%d)' % (format_datetime(start), format_datetime(end), desc, int(owner));
-	    res = self._db.query(query)
+  def newReservation(self, owner, start, end, description):
+    r = Reservation(parent=db.Key.from_path("User", owner))
+    r.starting = start
+    r.ending = end
+    r.description = description
+    r.put()
 
-	def updateReservation(self, r):
-		desc = escape(r._description.encode('utf8'))
-		query = 'UPDATE reservations SET `starting` = \'%s\', `ending` = \'%s\', `description` = \'%s\' WHERE `oid` = %d' % (format_datetime(r._from), format_datetime(r._to), desc, int(r._oid));
-		res = self._db.query(query)
+  def updateReservation(self, reservation):
+    k = db.Key.from_path("Reservation", reservation._oid, parent=db.Key.from_path("User", reservation._reservator))
+    r = db.get(k)
+    r.starting = reservation._from
+    r.ending = reservation._to
+    r.description = reservation._description
+    r.put()
 
-	def deleteReservation(self, r):
-		query = 'DELETE FROM reservations WHERE oid = %d' % r.getOid();
-		res = self._db.query(query)
-
+  def deleteReservation(self, reservation):
+    k = db.Key.from_path("Reservation", reservation._oid, parent=db.Key.from_path("User", reservation._reservator))
+    db.delete(k)

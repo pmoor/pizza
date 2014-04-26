@@ -1,61 +1,57 @@
-from mod_python.Session import Session 
+from src.Session import Session
 from Cheetah.Template import Template
 
 class LoginModule:
 
-	_dir = '/home/moorwww/public_html/pizza'
-	_sess = None    
-	_reason = ''
+  _sess = None
+  _reason = ''
 
-	def __init__(self, req, page):
-		self._sess = Session(req)
-		self._page = page
-		self._reason = ''
-		self._user = None
-		if self.isLoggedIn():
-			self._user = page._db.loadUserName(self.getUser())
+  def __init__(self, req, page):
+    self._sess = Session(req)
+    self._page = page
+    self._reason = ''
+    self._user = None
+    if self.isLoggedIn():
+      self._user = page._db.loadUserName(self.getUser())
 
 
-	def isLoggedIn(self):
-		return self._sess and self._sess['login']
+  def isLoggedIn(self):
+    return self._sess and self._sess['login']
 
-	def write(self):
-		t = Template(file=self._dir+'/templates/login.tmpl')
-		t.loggedin = self.isLoggedIn()
-		if t.loggedin:
-			t.user = self._sess['login']
+  def write(self):
+    t = Template(file='templates/login.tmpl')
+    t.loggedin = self.isLoggedIn()
+    if t.loggedin:
+      t.user = self._sess['login']
+    else:
+      t.reason = self._reason
+    return t
 
-		else:
-			t.reason = self._reason
+  def logout(self):
+    self._sess['login'] = ''
+    self._sess.save()
+    self._user = None
 
-		return t
+  def login(self, user, password):
+    u = self._page._db.loadUserName(user)
+    if not u:
+      self._reason = 'Unbekannter Benutzer oder falsches Passwort'
+      return False
 
-	def logout(self):
-		self._sess['login'] = ''
-		self._sess.save()
-		self._user = None
+    if not u.checkPassword(password):
+      self._reason = 'Unbekannter Benutzer oder falsches Passwort'
+      return False
 
-	def login(self, user, password):
-		u = self._page._db.loadUserName(user)
-		if not u:
-			self._reason = 'Unbekannter Benutzer oder falsches Passwort'
-			return False
+    self._sess['login'] = user
+    self._sess.save()
+    self._user = u
+    return True
 
-		if not u.checkPassword(password):
-			self._reason = 'Unbekannter Benutzer oder falsches Passwort'
-			return False
+  def getUser(self):
+    return self._sess['login']
 
-		self._sess['login'] = user
-		self._sess.save()
-		self._user = u
-		return True
+  def getOid(self):
+    if not self._user:
+      return -1
 
-	def getUser(self):
-		return self._sess['login']
-
-	def getOid(self):
-		if not self._user:
-			return -1
-
-		return self._user.getOid()
-
+    return self._user.getOid()

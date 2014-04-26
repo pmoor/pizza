@@ -1,4 +1,0 @@
-SetHandler python-program
-PythonPath "sys.path+['/home/moorwww/public_html/pizza/src']"
-PythonHandler mod_python.publisher
-#PythonDebug On

@@ -1,0 +1,9 @@
+indexes:
+
+- kind: User
+  properties:
+  - name: user_name
+
+- kind: Reservation
+  properties:
+  - name: starting

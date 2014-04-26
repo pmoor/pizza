@@ -28,7 +28,9 @@
 	#if $r.getReservatorOid() == $oid and $r.getDescription()
 	<tr style="background-color: rgb(147,147,255);">
 		<td></td>
-		<td colspan="4">$r.getDescription().encode('latin-1')</td>
+		#filter WebSafe
+		<td colspan="4">$r.getDescription()</td>
+		#end filter
 	</tr>
 	#end if
 #end for
